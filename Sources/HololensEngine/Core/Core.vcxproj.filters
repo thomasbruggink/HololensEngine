@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="HoloWindow.cpp">
+      <Filter>Os</Filter>
+    </ClCompile>
+    <ClCompile Include="AppFrameworkViewSource.cpp">
+      <Filter>Os</Filter>
+    </ClCompile>
+    <ClCompile Include="AppFrameworkView.cpp">
+      <Filter>Os</Filter>
+    </ClCompile>
+    <ClCompile Include="HoloDrawEngine.cpp">
+      <Filter>Os</Filter>
+    </ClCompile>
+    <ClCompile Include="HoloInput.cpp">
+      <Filter>Os</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorShader.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ColoredCube.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureShader.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedCube.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="HoloWindow.h">
+      <Filter>Os</Filter>
+    </ClInclude>
+    <ClInclude Include="HoloInput.h">
+      <Filter>Os</Filter>
+    </ClInclude>
+    <ClInclude Include="HoloDrawEngine.h">
+      <Filter>Os</Filter>
+    </ClInclude>
+    <ClInclude Include="AppFrameworkViewSource.h">
+      <Filter>Os</Filter>
+    </ClInclude>
+    <ClInclude Include="AppFrameworkView.h">
+      <Filter>Os</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorShader.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ColoredCube.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedCube.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureShader.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{8978407a-79fe-48e9-8578-80bba1869868}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Os">
+      <UniqueIdentifier>{6c810000-d552-4e81-a2a1-6eb0239ac2b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{56d94b12-c49b-4dd5-9f53-2076ac8b8d53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{d418e25a-74a8-4f93-b1f0-9a3c2d5e10ba}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ColorVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorVprtVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorPixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorGeometryShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="TextureVprtVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="TextureGeometryShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="TexturePixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="TextureVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
