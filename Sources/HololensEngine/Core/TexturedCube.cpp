@@ -199,7 +199,7 @@ void TexturedCube::Draw()
 
 void TexturedCube::Move(Vector3^ move)
 {
-	_location->Plus(move);
+	_location = _location->Plus(move);
 }
 
 void TexturedCube::MoveTo(Vector3^ location)

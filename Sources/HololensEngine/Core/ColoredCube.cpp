@@ -165,7 +165,7 @@ void ColoredCube::Draw()
 
 void ColoredCube::Move(Vector3^ move)
 {
-	_location->Plus(move);
+	_location = _location->Plus(move);
 }
 
 void ColoredCube::MoveTo(Vector3^ location)

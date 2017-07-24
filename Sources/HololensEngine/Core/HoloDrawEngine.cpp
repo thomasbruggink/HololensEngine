@@ -76,7 +76,7 @@ HoloDrawEngine::HoloDrawEngine(Windows::Graphics::Holographic::HolographicSpace 
 	//rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
 	rasterDesc.FrontCounterClockwise = false;
 	rasterDesc.MultisampleEnable = false;
-	rasterDesc.ScissorEnable = true;
+	rasterDesc.ScissorEnable = false;
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 
 	// Create the rasterizer state from the description we just filled out.

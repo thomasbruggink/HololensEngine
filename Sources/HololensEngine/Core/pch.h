@@ -1,5 +1,5 @@
 #pragma once
-
+#define _HAS_AUTO_PTR_ETC 1
 //Include precompiled headers to increase build speed
 #include <agile.h>
 #include <array>
