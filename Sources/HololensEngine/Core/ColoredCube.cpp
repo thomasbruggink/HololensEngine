@@ -62,7 +62,7 @@ void ColoredCube::Draw()
 				/*4*/{ XMFLOAT3(left, bottom, front),	XMFLOAT4{ (float)_color[4]->R, (float)_color[4]->G, (float)_color[4]->B, (float)_color[4]->A } }, //Left bottom front
 				/*5*/{ XMFLOAT3(left, bottom,  back),	XMFLOAT4{ (float)_color[5]->R, (float)_color[5]->G, (float)_color[5]->B, (float)_color[5]->A } }, //Left bottom rear
 				/*6*/{ XMFLOAT3(left,  top, front),		XMFLOAT4{ (float)_color[6]->R, (float)_color[6]->G, (float)_color[6]->B, (float)_color[6]->A } }, //Left top front
-				/*7*/{ XMFLOAT3(left,  top,  back),		XMFLOAT4{ (float)_color[7]->R, (float)_color[7]->G, (float)_color[7]->B, (float)_color[7]->A }	}, //Left top rear
+				/*7*/{ XMFLOAT3(left,  top,  back),		XMFLOAT4{ (float)_color[7]->R, (float)_color[7]->G, (float)_color[7]->B, (float)_color[7]->A } }, //Left top rear
 			} };
 
 		std::array<unsigned short, 36> cubeIndices =

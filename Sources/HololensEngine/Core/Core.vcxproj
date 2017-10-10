@@ -27,7 +27,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -91,6 +91,7 @@
     <ClInclude Include="HoloDrawEngine.h" />
     <ClInclude Include="HoloInput.h" />
     <ClInclude Include="HoloWindow.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="TexturedCube.h" />
     <ClInclude Include="TextureShader.h" />
@@ -103,6 +104,7 @@
     <ClCompile Include="HoloDrawEngine.cpp" />
     <ClCompile Include="HoloInput.cpp" />
     <ClCompile Include="HoloWindow.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

@@ -18,5 +18,10 @@
         {
             return new Vector2(X + rhs.X, Y + rhs.Y);
         }
+
+        public static Vector2 Zero()
+        {
+            return new Vector2(0.0f, 0.0f);
+        }
     }
 }

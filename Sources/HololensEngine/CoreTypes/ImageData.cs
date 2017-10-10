@@ -23,8 +23,8 @@ namespace CoreTypes
         public static ImageData LoadImage(string fileName)  
         {
             using (FileStream stream = File.OpenRead(fileName))
-            using (Image image = new Image(stream))
-            {
+            { 
+                var image = Image.Load(stream);
                 var imageData = new ImageData()
                 {
                     Width = image.Width,

@@ -101,6 +101,12 @@ void TexturedCube::Draw()
 
 		std::array<unsigned short, 36> cubeIndices =
 		{ {
+				0,4,6, // +z
+				0,6,2,
+
+				5,1,3, // -z
+				5,3,7,
+
 				1,0,2, // +x
 				1,2,3,
 
@@ -111,13 +117,7 @@ void TexturedCube::Draw()
 				4,0,1,
 
 				2,6,7, // +y
-				2,7,3,
-
-				0,4,6, // +z
-				0,6,2,
-
-				5,1,3, // -z
-				5,3,7,
+				2,7,3
 			} };
 
 		TexVertex* vertices = new TexVertex[cubeVertices.size()];
@@ -194,7 +194,7 @@ void TexturedCube::Draw()
 	world *= XMMatrixTranslation(_location->X, _location->Y, _location->Z);
 
 	//Draw texture
-	_textureShader->Render(36, world, _shaderResourceView);
+	_textureShader->Render(32, world, _shaderResourceView);
 }
 
 void TexturedCube::Move(Vector3^ move)

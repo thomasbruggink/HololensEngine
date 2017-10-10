@@ -10,8 +10,9 @@ namespace Example
             //The engine will create the core window and attach DirectX
             var engine = new HololensEngineCore.Engine();
             var exampleScene = new ExampleScene(engine);
+            var objScene = new ObjScene(engine);
             //Start the engine
-            engine.Start(exampleScene);
+            engine.Start(objScene);
         }
     }
 }

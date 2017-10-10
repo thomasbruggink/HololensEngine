@@ -1,10 +1,10 @@
 ﻿{
   "dependencies": {
-    "ImageSharp": "1.0.0-alpha4-00048",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.3"
+    "ImageSharp": "1.0.0-alpha9-00182",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0"
   },
   "frameworks": {
-    "uap10.0": {}
+    "uap10.0.10586": {}
   },
   "runtimes": {
     "win10-arm": {},

@@ -1,4 +1,5 @@
 ﻿using CoreTypes;
+using HololensEngineCore;
 
 namespace Example.Scenes
 {
@@ -9,21 +10,21 @@ namespace Example.Scenes
     {
         private Vector3 _locationCube;
         private Vector3 _rotationCube;
-        private HololensEngineCore.ColoredCube _cube;
+        private ColoredCube _cube;
 
         private Vector3 _locationPrettyCube;
         private Vector3 _rotationPrettyCube;
-        private HololensEngineCore.ColoredCube _prettyCube;
+        private ColoredCube _prettyCube;
 
         private Vector3 _locationTexturedCube;
         private Vector3 _rotationTexturedCube;
-        private HololensEngineCore.TexturedCube _texturedCube;
+        private TexturedCube _texturedCube;
 
         private CubeSize _size;
 
-        private readonly HololensEngineCore.Engine _engine;
+        private readonly Engine _engine;
 
-        public ExampleScene(HololensEngineCore.Engine engine)
+        public ExampleScene(Engine engine)
         {
             //Store the engine so we can load meshes
             _engine = engine;
@@ -40,14 +41,14 @@ namespace Example.Scenes
             _locationTexturedCube = new Vector3(-0.3f, 0.0f, -2.0f);
 
             //Color the center cube red
-            _cube = new HololensEngineCore.ColoredCube(_locationCube, _size, Color.Red(), _engine.GetWindow().GetDrawEngine());
+            _cube = new ColoredCube(_locationCube, _size, Color.Red(), _engine.GetWindow().GetDrawEngine());
             
             //Load the pretty cube without an initial color
-            _prettyCube = new HololensEngineCore.ColoredCube(_locationPrettyCube, _size, _engine.GetWindow().GetDrawEngine());
+            _prettyCube = new ColoredCube(_locationPrettyCube, _size, _engine.GetWindow().GetDrawEngine());
 
             //Load the image 
             var imageData = ImageData.LoadImage("Assets\\logo.jpg");
-            _texturedCube = new HololensEngineCore.TexturedCube(_locationTexturedCube, _size, _engine.GetWindow().GetDrawEngine(), imageData);
+            _texturedCube = new TexturedCube(_locationTexturedCube, _size, _engine.GetWindow().GetDrawEngine(), imageData);
 
             //Get the rotation vector
             _rotationCube = _cube.Rotation();

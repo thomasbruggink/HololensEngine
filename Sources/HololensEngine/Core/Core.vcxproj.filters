@@ -32,6 +32,9 @@
     <ClCompile Include="TexturedCube.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -64,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="TextureShader.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
