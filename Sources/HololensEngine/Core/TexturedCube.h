@@ -12,6 +12,7 @@ namespace HololensEngineCore
 	{
 		DirectX::XMFLOAT3 Pos;
 		DirectX::XMFLOAT2 Tex;
+		DirectX::XMFLOAT3 Norm;
 	};
 
 	[Windows::Foundation::Metadata::WebHostHidden]
@@ -25,6 +26,10 @@ namespace HololensEngineCore
 		void ChangeRotationPoint(CoreTypes::RotationPoint rotationPoint);
 		CoreTypes::Vector3^ Location();
 		CoreTypes::Vector3^ Rotation();
+		CoreTypes::Vector3^ LightDirection();
+		CoreTypes::Vector3^ Scale();
+		float AmbientLight();
+		void AmbientLight(float input);
 	private:
 		ID3D11Device* _device;
 		ID3D11DeviceContext* _context;
@@ -38,6 +43,9 @@ namespace HololensEngineCore
 
 		CoreTypes::CubeSize^ _size;
 		CoreTypes::Vector3^ _location;
+		CoreTypes::Vector3^ _lightDirection;
+		CoreTypes::Vector3^ _scale;
+		float _ambientLight;
 		~TexturedCube();
 
 		void ConvertImageData(CoreTypes::ImageData^ imageData);

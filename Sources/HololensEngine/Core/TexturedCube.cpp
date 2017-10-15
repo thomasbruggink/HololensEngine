@@ -17,6 +17,9 @@ TexturedCube::TexturedCube(CoreTypes::Vector3^ location, CoreTypes::CubeSize^ si
 	_context = drawEngine->GetContext();
 	_rotationPoint = RotationPoint::Center;
 	_rotation = ref new Vector3(0.0f, 0.0f, 0.0f);
+	_lightDirection = ref new Vector3(0.0f, 0.0f, 0.0f);
+	_scale = ref new Vector3(1.0f, 1.0f, 1.0f);
+	_ambientLight = 1.0f;
 
 	_textureShader = ref new TextureShader(drawEngine);
 	_textureShader->Initialize();
@@ -87,50 +90,58 @@ void TexturedCube::Draw()
 		float back = 0;
 		float front = _size->Depth;
 
-		std::array<TexVertex, 8> cubeVertices =
+		std::array<TexVertex, 36> cubeVertices =
 		{ {
-				/*0*/{ XMFLOAT3(right, bottom, front),	XMFLOAT2(tright, tbottom) }, //Right bottom front
-				/*1*/{ XMFLOAT3(right, bottom,  back),	XMFLOAT2(tright, tbottom) }, //Right bottom rear
-				/*2*/{ XMFLOAT3(right,  top, front),	XMFLOAT2(tright, ttop) }, //Right top front
-				/*3*/{ XMFLOAT3(right,  top, back),		XMFLOAT2(tright, ttop) }, //Right top rear
-				/*4*/{ XMFLOAT3(left, bottom, front),	XMFLOAT2(tleft, tbottom) }, //Left bottom front
-				/*5*/{ XMFLOAT3(left, bottom,  back),	XMFLOAT2(tleft, tbottom) }, //Left bottom rear
-				/*6*/{ XMFLOAT3(left,  top, front),		XMFLOAT2(tleft, ttop) }, //Left top front
-				/*7*/{ XMFLOAT3(left,  top,  back),		XMFLOAT2(tleft, ttop) }, //Left top rear
-			} };
-
-		std::array<unsigned short, 36> cubeIndices =
-		{ {
-				0,4,6, // +z
-				0,6,2,
-
-				5,1,3, // -z
-				5,3,7,
-
-				1,0,2, // +x
-				1,2,3,
-
-				4,5,7, // -x
-				4,7,6,
-
-				1,5,4, // -y
-				4,0,1,
-
-				2,6,7, // +y
-				2,7,3
-			} };
+			{ XMFLOAT3(left,  bottom, back), XMFLOAT2(tleft, ttop),  XMFLOAT3(0.0,  0.0, back) },
+			{ XMFLOAT3(right,  bottom, back), XMFLOAT2(tright, ttop),  XMFLOAT3(0.0,  0.0, back) },
+			{ XMFLOAT3(left, top, back), XMFLOAT2(tleft, tbottom),  XMFLOAT3(0.0,  0.0, back) },
+			{ XMFLOAT3(left, top, back), XMFLOAT2(tleft, tbottom),  XMFLOAT3(0.0,  0.0, back) },
+			{ XMFLOAT3(right,  bottom, back), XMFLOAT2(tright, ttop),  XMFLOAT3(0.0,  0.0, back) },
+			{ XMFLOAT3(right, top, back), XMFLOAT2(tright, tbottom),  XMFLOAT3(0.0,  0.0, back) },
+			{ XMFLOAT3(right,  bottom, back), XMFLOAT2(tleft, ttop),  XMFLOAT3(right,  0.0,  0.0) },
+			{ XMFLOAT3(right,  bottom,  front), XMFLOAT2(tright, ttop),  XMFLOAT3(right,  0.0,  0.0) },
+			{ XMFLOAT3(right, top, back), XMFLOAT2(tleft, tbottom),  XMFLOAT3(right,  0.0,  0.0) },
+			{ XMFLOAT3(right, top, back), XMFLOAT2(tleft, tbottom),  XMFLOAT3(right,  0.0,  0.0) },
+			{ XMFLOAT3(right,  bottom,  front), XMFLOAT2(tright, ttop),  XMFLOAT3(right,  0.0,  0.0) },
+			{ XMFLOAT3(right, top,  front), XMFLOAT2(tright, tbottom),  XMFLOAT3(right,  0.0,  0.0) },
+			{ XMFLOAT3(right,  bottom,  front), XMFLOAT2(tleft, ttop),  XMFLOAT3(0.0,  0.0,  front) },
+			{ XMFLOAT3(left,  bottom,  front), XMFLOAT2(tright, ttop),  XMFLOAT3(0.0,  0.0,  front) },
+			{ XMFLOAT3(right, top,  front), XMFLOAT2(tleft, tbottom),  XMFLOAT3(0.0,  0.0,  front) },
+			{ XMFLOAT3(right, top,  front), XMFLOAT2(tleft, tbottom),  XMFLOAT3(0.0,  0.0,  front) },
+			{ XMFLOAT3(left,  bottom,  front), XMFLOAT2(tright, ttop),  XMFLOAT3(0.0,  0.0,  front) },
+			{ XMFLOAT3(left, top,  front), XMFLOAT2(tright, tbottom),  XMFLOAT3(0.0,  0.0,  front) },
+			{ XMFLOAT3(left,  bottom,  front), XMFLOAT2(tleft, ttop),  XMFLOAT3(left,  0.0,  0.0) },
+			{ XMFLOAT3(left,  bottom, back), XMFLOAT2(tright, ttop),  XMFLOAT3(left,  0.0,  0.0) },
+			{ XMFLOAT3(left, top,  front), XMFLOAT2(tleft, tbottom),  XMFLOAT3(left,  0.0,  0.0) },
+			{ XMFLOAT3(left, top,  front), XMFLOAT2(tleft, tbottom),  XMFLOAT3(left,  0.0,  0.0) },
+			{ XMFLOAT3(left,  bottom, back), XMFLOAT2(tright, ttop),  XMFLOAT3(left,  0.0,  0.0) },
+			{ XMFLOAT3(left, top, back), XMFLOAT2(tright, tbottom),  XMFLOAT3(left,  0.0,  0.0) },
+			{ XMFLOAT3(left,  bottom,  front), XMFLOAT2(tleft, ttop),  XMFLOAT3(0.0,  bottom,  0.0) },
+			{ XMFLOAT3(right,  bottom,  front), XMFLOAT2(tright, ttop),  XMFLOAT3(0.0,  bottom,  0.0) },
+			{ XMFLOAT3(left,  bottom, back), XMFLOAT2(tleft, tbottom),  XMFLOAT3(0.0,  bottom,  0.0) },
+			{ XMFLOAT3(left,  bottom, back), XMFLOAT2(tleft, tbottom),  XMFLOAT3(0.0,  bottom,  0.0) },
+			{ XMFLOAT3(right,  bottom,  front), XMFLOAT2(tright, ttop),  XMFLOAT3(0.0,  bottom,  0.0) },
+			{ XMFLOAT3(right,  bottom, back), XMFLOAT2(tright, tbottom),  XMFLOAT3(0.0,  bottom,  0.0) },
+			{ XMFLOAT3(left, top, back), XMFLOAT2(tleft, ttop),  XMFLOAT3(0.0, top,  0.0) },
+			{ XMFLOAT3(right, top, back), XMFLOAT2(tright, ttop),  XMFLOAT3(0.0, top,  0.0) },
+			{ XMFLOAT3(left, top,  front), XMFLOAT2(tleft, tbottom),  XMFLOAT3(0.0, top,  0.0) },
+			{ XMFLOAT3(left, top,  front), XMFLOAT2(tleft, tbottom),  XMFLOAT3(0.0, top,  0.0) },
+			{ XMFLOAT3(right, top, back), XMFLOAT2(tright, ttop),  XMFLOAT3(0.0, top,  0.0) },
+			{ XMFLOAT3(right, top,  front), XMFLOAT2(tright, tbottom),  XMFLOAT3(0.0, top,  0.0) }
+		} };
 
 		TexVertex* vertices = new TexVertex[cubeVertices.size()];
-		unsigned long * indices = new unsigned long[36];
+		unsigned int indexCount = 36;
+		unsigned long * indices = new unsigned long[indexCount];
 
-		for (unsigned int i = 0; i < 8; i++)
+		for (unsigned int i = 0; i < cubeVertices.size(); i++)
 		{
 			vertices[i] = cubeVertices[i];
 		}
 
-		for (unsigned int i = 0; i < 36; i++)
+		for (unsigned int i = 0; i < indexCount; i++)
 		{
-			indices[i] = cubeIndices[i];
+			indices[i] = i;
 		}
 
 		// Set up the description of the static vertex buffer.
@@ -152,7 +163,7 @@ void TexturedCube::Draw()
 
 		// Set up the description of the static index buffer.
 		indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		indexBufferDesc.ByteWidth = sizeof(unsigned long) * 36;
+		indexBufferDesc.ByteWidth = sizeof(unsigned long) * indexCount;
 		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		indexBufferDesc.CPUAccessFlags = 0;
 		indexBufferDesc.MiscFlags = 0;
@@ -191,10 +202,11 @@ void TexturedCube::Draw()
 	if (_rotationPoint == RotationPoint::Center)
 		world *= XMMatrixTranslation(-_size->Width / 2.0f, -_size->Height / 2.0f, -_size->Depth / 2.0f);
 	world *= XMMatrixRotationRollPitchYawFromVector({ XMConvertToRadians(_rotation->X), XMConvertToRadians(_rotation->Y), XMConvertToRadians(_rotation->Z) });
+	world *= XMMatrixScaling(_scale->X, _scale->Y, _scale->Z);
 	world *= XMMatrixTranslation(_location->X, _location->Y, _location->Z);
 
 	//Draw texture
-	_textureShader->Render(32, world, _shaderResourceView);
+	_textureShader->Render(36, world, _shaderResourceView, DirectX::XMFLOAT3(_lightDirection->X, _lightDirection->Y, _lightDirection->Z), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), DirectX::XMFLOAT4(_ambientLight, _ambientLight, _ambientLight, 1.0f));
 }
 
 void TexturedCube::Move(Vector3^ move)
@@ -220,6 +232,26 @@ CoreTypes::Vector3^ TexturedCube::Location()
 CoreTypes::Vector3^ TexturedCube::Rotation()
 {
 	return _rotation;
+}
+
+CoreTypes::Vector3^ TexturedCube::LightDirection()
+{
+	return _lightDirection;
+}
+
+CoreTypes::Vector3^ TexturedCube::Scale()
+{
+	return _scale;
+}
+
+float TexturedCube::AmbientLight()
+{
+	return _ambientLight;
+}
+
+void TexturedCube::AmbientLight(float input)
+{
+	_ambientLight = input;
 }
 
 TexturedCube::~TexturedCube()

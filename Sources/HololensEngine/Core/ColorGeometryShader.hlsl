@@ -2,6 +2,7 @@ struct GSInput
 {
 	float4 pos : SV_POSITION;
 	float4 color : COLOR;
+	float3 normal : NORMAL;
 	uint rtvId : TEXCOORD1;
 };
 
@@ -9,6 +10,7 @@ struct GSOutput
 {
 	float4 pos : SV_POSITION;
 	float4 color : COLOR;
+	float3 normal : NORMAL;
 	uint rtvId : SV_RenderTargetArrayIndex;
 };
 
@@ -21,6 +23,7 @@ void main(triangle GSInput input[3], inout TriangleStream<GSOutput> output)
 	{
 		element.pos = input[i].pos;
 		element.color = input[i].color;
+		element.normal = input[i].normal;
 		element.rtvId = input[i].rtvId;
 		output.Append(element);
 	}

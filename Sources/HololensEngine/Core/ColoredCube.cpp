@@ -27,6 +27,8 @@ void ColoredCube::Construct(Vector3^ location, CubeSize^ size, Color^ color, Hol
 	_context = drawEngine->GetContext();
 	_rotationPoint = RotationPoint::Center;
 	_rotation = ref new Vector3(0.0f, 0.0f, 0.0f);
+	_lightDirection = ref new Vector3(0.0f, 0.0f, 0.0f);
+	_scale = ref new Vector3(1.0f, 1.0f, 1.0f);
 
 	for (unsigned int i = 0; i < 8; i++)
 	{
@@ -55,14 +57,14 @@ void ColoredCube::Draw()
 
 		std::array<Vertex, 8> cubeVertices =
 		{ {
-				/*0*/{ XMFLOAT3(right, bottom, front),	XMFLOAT4{ (float)_color[0]->R, (float)_color[0]->G, (float)_color[0]->B, (float)_color[0]->A } }, //Right bottom front
-				/*1*/{ XMFLOAT3(right, bottom,  back),	XMFLOAT4{ (float)_color[1]->R, (float)_color[1]->G, (float)_color[1]->B, (float)_color[1]->A } }, //Right bottom rear
-				/*2*/{ XMFLOAT3(right,  top, front),	XMFLOAT4{ (float)_color[2]->R, (float)_color[2]->G, (float)_color[2]->B, (float)_color[2]->A } }, //Right top front
-				/*3*/{ XMFLOAT3(right,  top, back),		XMFLOAT4{ (float)_color[3]->R, (float)_color[3]->G, (float)_color[3]->B, (float)_color[3]->A } }, //Right top rear
-				/*4*/{ XMFLOAT3(left, bottom, front),	XMFLOAT4{ (float)_color[4]->R, (float)_color[4]->G, (float)_color[4]->B, (float)_color[4]->A } }, //Left bottom front
-				/*5*/{ XMFLOAT3(left, bottom,  back),	XMFLOAT4{ (float)_color[5]->R, (float)_color[5]->G, (float)_color[5]->B, (float)_color[5]->A } }, //Left bottom rear
-				/*6*/{ XMFLOAT3(left,  top, front),		XMFLOAT4{ (float)_color[6]->R, (float)_color[6]->G, (float)_color[6]->B, (float)_color[6]->A } }, //Left top front
-				/*7*/{ XMFLOAT3(left,  top,  back),		XMFLOAT4{ (float)_color[7]->R, (float)_color[7]->G, (float)_color[7]->B, (float)_color[7]->A } }, //Left top rear
+				/*0*/{ XMFLOAT3(right, bottom, front),	XMFLOAT4{ (float)_color[0]->R, (float)_color[0]->G, (float)_color[0]->B, (float)_color[0]->A }, XMFLOAT3( 0.0f, 0.0f, -1.0f) }, //Right bottom front
+				/*1*/{ XMFLOAT3(right, bottom,  back),	XMFLOAT4{ (float)_color[1]->R, (float)_color[1]->G, (float)_color[1]->B, (float)_color[1]->A }, XMFLOAT3( 0.0f, 0.0f, -1.0f) }, //Right bottom rear
+				/*2*/{ XMFLOAT3(right,  top, front),	XMFLOAT4{ (float)_color[2]->R, (float)_color[2]->G, (float)_color[2]->B, (float)_color[2]->A }, XMFLOAT3( 0.0f, 0.0f, -1.0f) }, //Right top front
+				/*3*/{ XMFLOAT3(right,  top, back),		XMFLOAT4{ (float)_color[3]->R, (float)_color[3]->G, (float)_color[3]->B, (float)_color[3]->A }, XMFLOAT3( 0.0f, 0.0f, -1.0f) }, //Right top rear
+				/*4*/{ XMFLOAT3(left, bottom, front),	XMFLOAT4{ (float)_color[4]->R, (float)_color[4]->G, (float)_color[4]->B, (float)_color[4]->A }, XMFLOAT3( 0.0f, 0.0f, -1.0f) }, //Left bottom front
+				/*5*/{ XMFLOAT3(left, bottom,  back),	XMFLOAT4{ (float)_color[5]->R, (float)_color[5]->G, (float)_color[5]->B, (float)_color[5]->A }, XMFLOAT3( 0.0f, 0.0f, -1.0f) }, //Left bottom rear
+				/*6*/{ XMFLOAT3(left,  top, front),		XMFLOAT4{ (float)_color[6]->R, (float)_color[6]->G, (float)_color[6]->B, (float)_color[6]->A }, XMFLOAT3( 0.0f, 0.0f, -1.0f) }, //Left top front
+				/*7*/{ XMFLOAT3(left,  top,  back),		XMFLOAT4{ (float)_color[7]->R, (float)_color[7]->G, (float)_color[7]->B, (float)_color[7]->A }, XMFLOAT3( 0.0f, 0.0f, -1.0f) }, //Left top rear
 			} };
 
 		std::array<unsigned short, 36> cubeIndices =
@@ -157,10 +159,11 @@ void ColoredCube::Draw()
 	if (_rotationPoint == RotationPoint::Center)
 		world *= XMMatrixTranslation(-_size->Width / 2.0f, -_size->Height / 2.0f, -_size->Depth / 2.0f);
 	world *= XMMatrixRotationRollPitchYawFromVector({ XMConvertToRadians(_rotation->X), XMConvertToRadians(_rotation->Y), XMConvertToRadians(_rotation->Z) });
+	world *= XMMatrixScaling(_scale->X, _scale->Y, _scale->Z);
 	world *= XMMatrixTranslation(_location->X, _location->Y, _location->Z);
 
-	//Draw texture
-	_colorShader->Render(36, world);
+	//Draw colored cube
+	_colorShader->Render(36, world, DirectX::XMFLOAT3(_lightDirection->X, _lightDirection->Y, _lightDirection->Z), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 void ColoredCube::Move(Vector3^ move)

@@ -1,5 +1,6 @@
 ﻿using CoreTypes;
 using HololensEngineCore;
+using System;
 
 namespace Example.Scenes
 {
@@ -19,6 +20,8 @@ namespace Example.Scenes
         private Vector3 _locationTexturedCube;
         private Vector3 _rotationTexturedCube;
         private TexturedCube _texturedCube;
+        private Vector3 _lightDirection;
+        private double _lightIncr;
 
         private CubeSize _size;
 
@@ -49,6 +52,9 @@ namespace Example.Scenes
             //Load the image 
             var imageData = ImageData.LoadImage("Assets\\logo.jpg");
             _texturedCube = new TexturedCube(_locationTexturedCube, _size, _engine.GetWindow().GetDrawEngine(), imageData);
+            _lightDirection = _texturedCube.LightDirection();
+            _lightDirection.Z = -1.0f;
+            _lightDirection.X = -1.0f;
 
             //Get the rotation vector
             _rotationCube = _cube.Rotation();
@@ -73,6 +79,9 @@ namespace Example.Scenes
             _rotationCube.Y += (float)(gametime / 16.66666);
             _rotationPrettyCube.Y += (float)(gametime / 16.66666);
             _rotationTexturedCube.Y += (float)(gametime / 16.66666);
+
+            _lightIncr += gametime / 16.66666;
+            //_lightDirection.X = (float)Math.Sin(_lightIncr * 0.025);
         }
 
         public void Draw()

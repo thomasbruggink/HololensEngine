@@ -13,11 +13,19 @@ namespace HololensEngineCore
 			ColorShader(HoloDrawEngine^ drawEngine);
 			void Initialize();
 		internal:
-			void Render(int indexCount, DirectX::XMMATRIX world);
+			void Render(int indexCount, DirectX::XMMATRIX world, DirectX::XMFLOAT3 lightDirection, DirectX::XMFLOAT4 diffuseColor, DirectX::XMFLOAT4 ambientColor);
 		private:
 			struct MatrixBufferType
 			{
 				DirectX::XMMATRIX world;
+			};
+
+			struct LightBufferType
+			{
+				DirectX::XMFLOAT4 ambientColor;
+				DirectX::XMFLOAT4 diffuseColor;
+				DirectX::XMFLOAT3 lightDirection;
+				float padding;
 			};
 
 			ID3D11Device* _device;
@@ -27,10 +35,11 @@ namespace HololensEngineCore
 			ID3D11PixelShader* _pixelShader;
 			ID3D11InputLayout* _inputLayout;
 			ID3D11Buffer* _matrixBuffer;
+			ID3D11Buffer* _lightBuffer;
 			ID3D11SamplerState* _samplerState;
 			bool _supportsVprt;
 
-			void SetShaderParameters(DirectX::XMMATRIX worldMatrix);
+			void SetShaderParameters(DirectX::XMMATRIX worldMatrix, DirectX::XMFLOAT3 lightDirection, DirectX::XMFLOAT4 diffuseColor, DirectX::XMFLOAT4 ambientColor);
 			void RenderShader(int indexCount);
 			Platform::Array<byte>^ LoadShaderFile(std::string file);
 			~ColorShader();

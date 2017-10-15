@@ -11,30 +11,46 @@ using namespace Platform;
 
 Mesh::Mesh(Vector3^ location, ObjReader^ reader, HoloDrawEngine^ drawEngine)
 {
+	Init(location, reader, drawEngine, Color::White());
+}
+
+Mesh::Mesh(Vector3^ location, ObjReader^ reader, HoloDrawEngine^ drawEngine, Color^ color)
+{
+	Init(location, reader, drawEngine, color);
+}
+
+void Mesh::Init(Vector3^ location, ObjReader^ reader, HoloDrawEngine^ drawEngine, Color^ color)
+{
 	_location = location;
 	_device = drawEngine->GetDevice();
 	_context = drawEngine->GetContext();
 	_size = reader->Size;
 	_rotationPoint = RotationPoint::Center;
 	_rotation = ref new Vector3(0.0f, 0.0f, 0.0f);
+	_lightDirection = ref new Vector3(0.0f, 0.0f, 0.0f);
+	_scale = ref new Vector3(1.0f, 1.0f, 1.0f);
+	_ambientLight = 1.0f;
 
 	_vertexCount = reader->VertexCount;
 	_vertice = new Vertex[reader->VertexCount];
 	_indexCount = reader->IndexCount;
 	_indices = new unsigned long[reader->IndexCount];
 
-	Color^ color = ref new Color(1.0f, 0.0f, 0.0f);
 	for (unsigned int i = 0; i < _vertexCount; i++)
 	{
-		Vector3^ vector = reader->Vertice->GetAt(i);
-		_vertice[i].Pos.x = vector->X;
-		_vertice[i].Pos.y = vector->Y;
-		_vertice[i].Pos.z = vector->Z;
+		VertexTextureNormal^ pair = reader->Vertice->GetAt(i);
+		_vertice[i].Pos.x = pair->Vertex->X;
+		_vertice[i].Pos.y = pair->Vertex->Y;
+		_vertice[i].Pos.z = pair->Vertex->Z;
 
 		_vertice[i].Color.x = color->R;
 		_vertice[i].Color.y = color->G;
 		_vertice[i].Color.z = color->B;
 		_vertice[i].Color.w = color->A;
+
+		_vertice[i].Norm.x = pair->Normal->X;
+		_vertice[i].Norm.y = pair->Normal->Y;
+		_vertice[i].Norm.z = pair->Normal->Z;
 	}
 
 	for (unsigned int i = 0; i < _indexCount; i++)
@@ -108,10 +124,12 @@ void Mesh::Draw()
 	if (_rotationPoint == RotationPoint::Center)
 		world *= XMMatrixTranslation(-_size->Width / 2.0f, -_size->Height / 2.0f, -_size->Depth / 2.0f);
 	world *= XMMatrixRotationRollPitchYawFromVector({ XMConvertToRadians(_rotation->X), XMConvertToRadians(_rotation->Y), XMConvertToRadians(_rotation->Z) });
+	world *= XMMatrixScaling(_scale->X, _scale->Y, _scale->Z);
 	world *= XMMatrixTranslation(_location->X, _location->Y, _location->Z);
 
-	//Draw texture
-	_colorShader->Render(_indexCount, world);
+	//Draw mesh
+	//_colorShader->Render(_indexCount, world, DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f));
+	_colorShader->Render(_indexCount, world, DirectX::XMFLOAT3(_lightDirection->X, _lightDirection->Y, _lightDirection->Z), DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), DirectX::XMFLOAT4(_ambientLight, _ambientLight, _ambientLight, 1.0f));
 }
 
 void Mesh::Move(Vector3^ move)
@@ -137,6 +155,26 @@ CoreTypes::Vector3^ Mesh::Location()
 CoreTypes::Vector3^ Mesh::Rotation()
 {
 	return _rotation;
+}
+
+CoreTypes::Vector3^ Mesh::LightDirection()
+{
+	return _lightDirection;
+}
+
+CoreTypes::Vector3^ Mesh::Scale()
+{
+	return _scale;
+}
+
+float Mesh::AmbientLight()
+{
+	return _ambientLight;
+}
+
+void Mesh::AmbientLight(float input)
+{
+	_ambientLight = input;
 }
 
 Mesh::~Mesh()

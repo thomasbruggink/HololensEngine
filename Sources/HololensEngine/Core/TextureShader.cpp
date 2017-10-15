@@ -48,7 +48,8 @@ void TextureShader::Initialize()
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	// create and set the input layout
@@ -63,6 +64,17 @@ void TextureShader::Initialize()
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
 	_device->CreateBuffer(&matrixBufferDesc, NULL, &_matrixBuffer);
+
+	D3D11_BUFFER_DESC lightBufferDesc;
+	// Setup the description of the light dynamic constant buffer that is in the pixel shader.
+	// Note that ByteWidth always needs to be a multiple of 16 if using D3D11_BIND_CONSTANT_BUFFER or CreateBuffer will fail.
+	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	lightBufferDesc.ByteWidth = sizeof(LightBufferType);
+	lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lightBufferDesc.MiscFlags = 0;
+	lightBufferDesc.StructureByteStride = 0;
+	_device->CreateBuffer(&lightBufferDesc, NULL, &_lightBuffer);
 
 	//Setup texture sampler state
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -84,16 +96,17 @@ void TextureShader::Initialize()
 	_device->CreateSamplerState(&samplerDesc, &_samplerState);
 }
 
-void TextureShader::Render(int indexCount, DirectX::XMMATRIX world, ID3D11ShaderResourceView* resource)
+void TextureShader::Render(int indexCount, DirectX::XMMATRIX world, ID3D11ShaderResourceView* resource, DirectX::XMFLOAT3 lightDirection, DirectX::XMFLOAT4 diffuseColor, DirectX::XMFLOAT4 ambientColor)
 {
-	SetShaderParameters(world, resource);
+	SetShaderParameters(world, resource, lightDirection, diffuseColor, ambientColor);
 	RenderShader(indexCount);
 }
 
-void TextureShader::SetShaderParameters(DirectX::XMMATRIX worldMatrix, ID3D11ShaderResourceView* resource)
+void TextureShader::SetShaderParameters(DirectX::XMMATRIX worldMatrix, ID3D11ShaderResourceView* resource, DirectX::XMFLOAT3 lightDirection, DirectX::XMFLOAT4 diffuseColor, DirectX::XMFLOAT4 ambientColor)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
+	LightBufferType* lightDataPtr;
 
 	worldMatrix = XMMatrixTranspose(worldMatrix);
 
@@ -112,6 +125,22 @@ void TextureShader::SetShaderParameters(DirectX::XMMATRIX worldMatrix, ID3D11Sha
 	//Write to buffer 0
 	_context->VSSetConstantBuffers(0, 1, &_matrixBuffer);
 	_context->PSSetShaderResources(0, 1, &resource);
+
+	//Map the light buffer so we can write
+	_context->Map(_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	//Get the pointer
+	lightDataPtr = (LightBufferType*)mappedResource.pData;
+	//Copy the variables into the constant buffer
+	lightDataPtr->ambientColor = ambientColor;
+	lightDataPtr->diffuseColor = diffuseColor;
+	lightDataPtr->lightDirection = lightDirection;
+	lightDataPtr->padding = 0.0f;
+
+	//Unlock the light constant buffer
+	_context->Unmap(_lightBuffer, 0);
+
+	//Set the vertex shader constant buffer
+	_context->PSSetConstantBuffers(0, 1, &_lightBuffer);
 }
 
 void TextureShader::RenderShader(int indexCount)
